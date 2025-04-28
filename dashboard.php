@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Check if user is logged in and is a teacher
+if(!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'teacher') {
+    header("Location: login.php");
+    exit;
+}
+
 // Database Configuration
 $db_host = "localhost";
 $db_user = "root";
@@ -124,6 +132,7 @@ $qr_code_image = "attendanceqr.png";
             <ul>
                 <li class="active"><a href="dashboard.php">DASHBOARD</a></li>
                 <li><a href="profile.php">PROFILE</a></li>
+                <li class="logout"><a href="logout.php">LOGOUT</a></li>
             </ul>
         </div>
         <div class="main-content">

@@ -34,11 +34,88 @@ $sql = "CREATE TABLE IF NOT EXISTS attendance (
 )";
 
 if (mysqli_query($conn, $sql)) {
-    echo "Table created successfully or already exists<br>";
+    echo "Attendance table created successfully or already exists<br>";
 } else {
-    echo "Error creating table: " . mysqli_error($conn) . "<br>";
+    echo "Error creating attendance table: " . mysqli_error($conn) . "<br>";
 }
 
-// Just for initial setup, remove in production
-echo "<a href='index.php'>Go to Main System</a>";
+// Create Teachers Table
+$sql = "CREATE TABLE IF NOT EXISTS teachers (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(20) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+
+if (mysqli_query($conn, $sql)) {
+    echo "Teachers table created successfully or already exists<br>";
+} else {
+    echo "Error creating teachers table: " . mysqli_error($conn) . "<br>";
+}
+
+// Create Students Table
+$sql = "CREATE TABLE IF NOT EXISTS students (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(20) NOT NULL,
+    course VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+
+if (mysqli_query($conn, $sql)) {
+    echo "Students table created successfully or already exists<br>";
+} else {
+    echo "Error creating students table: " . mysqli_error($conn) . "<br>";
+}
+
+// Create a default teacher account if none exists
+$sql = "SELECT COUNT(*) AS teacher_count FROM teachers";
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+
+if ($row['teacher_count'] == 0) {
+    // Create default teacher: teacher@example.com / password123
+    $default_name = "Default Teacher";
+    $default_email = "teacher@example.com";
+    $default_phone = "+123456789";
+    $default_password = password_hash("password123", PASSWORD_DEFAULT);
+    
+    $sql = "INSERT INTO teachers (name, email, phone, password) 
+            VALUES ('$default_name', '$default_email', '$default_phone', '$default_password')";
+    
+    if (mysqli_query($conn, $sql)) {
+        echo "Default teacher account created: teacher@example.com / password123<br>";
+    } else {
+        echo "Error creating default teacher account: " . mysqli_error($conn) . "<br>";
+    }
+}
+
+// Create a default student account if none exists
+$sql = "SELECT COUNT(*) AS student_count FROM students";
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+
+if ($row['student_count'] == 0) {
+    // Create default student: student@example.com / password123
+    $default_name = "Default Student";
+    $default_email = "student@example.com";
+    $default_phone = "+123456789";
+    $default_course = "Computer Science";
+    $default_password = password_hash("password123", PASSWORD_DEFAULT);
+    
+    $sql = "INSERT INTO students (name, email, phone, course, password) 
+            VALUES ('$default_name', '$default_email', '$default_phone', '$default_course', '$default_password')";
+    
+    if (mysqli_query($conn, $sql)) {
+        echo "Default student account created: student@example.com / password123<br>";
+    } else {
+        echo "Error creating default student account: " . mysqli_error($conn) . "<br>";
+    }
+}
+
+echo "<br><a href='login.php'>Go to Login Page</a>";
 ?>
