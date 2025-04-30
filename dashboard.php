@@ -21,6 +21,21 @@ if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
+// Get teacher information
+$teacher_id = $_SESSION['user_id'];
+$sql = "SELECT * FROM teachers WHERE id = $teacher_id";
+$result = mysqli_query($conn, $sql);
+$teacher = mysqli_fetch_assoc($result);
+
+// If teacher data couldn't be found, use session data as fallback
+if (!$teacher) {
+    $teacher = [
+        'name' => $_SESSION['user_name'] ?? 'Unknown Teacher',
+        'phone' => '',
+        'email' => ''
+    ];
+}
+
 // Use the custom QR code image provided by you
 $qr_code_image = "attendanceqr.png";
 ?>
@@ -30,100 +45,9 @@ $qr_code_image = "attendanceqr.png";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAMS - Admin Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 250px;
-            background-color: #222;
-            color: #fff;
-            padding: 20px 0;
-        }
-        .sidebar h1 {
-            color: #e74c3c;
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .sidebar li {
-            padding: 15px 30px;
-        }
-        .sidebar li.active {
-            background-color: #333;
-            border-left: 4px solid #e74c3c;
-        }
-        .sidebar a {
-            color: #fff;
-            text-decoration: none;
-        }
-        .main-content {
-            flex: 1;
-            background-color: #a73535;
-            padding: 20px;
-            color: white;
-        }
-        .qr-container {
-            text-align: center;
-            margin-top: 30px;
-            margin-bottom: 30px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-        .download-btn {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        table th, table td {    
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        table th {
-            background-color: rgba(0, 0, 0, 0.2);
-        }
-        .refresh-section {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .refresh-btn {
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/logout_modal.css">
+    <title>SAMS - Teacher Dashboard</title>
 </head>
 <body>
     <div class="container">
@@ -132,11 +56,14 @@ $qr_code_image = "attendanceqr.png";
             <ul>
                 <li class="active"><a href="dashboard.php">DASHBOARD</a></li>
                 <li><a href="profile.php">PROFILE</a></li>
-                <li class="logout"><a href="logout.php">LOGOUT</a></li>
+                <li class="logout"><a href="logout.php?confirm=yes">LOGOUT</a></li>
             </ul>
         </div>
         <div class="main-content">
-            <h2>DASHBOARD</h2>
+            <div class="welcome-box">
+                <h2>Welcome, <?php echo htmlspecialchars($teacher['name']); ?>!</h2>
+                <p>Teacher Dashboard</p>
+            </div>
             
             <div class="qr-container">
                 <h3>Student Attendance QR Code</h3>
@@ -172,10 +99,10 @@ $qr_code_image = "attendanceqr.png";
                         while($row = mysqli_fetch_assoc($result)) {
                             echo "<tr>";
                             echo "<td>" . $count . "</td>";
-                            echo "<td>" . $row['name'] . "</td>";
-                            echo "<td>" . $row['email'] . "</td>";
-                            echo "<td>" . $row['course'] . "</td>";
-                            echo "<td>" . $row['time_in'] . "</td>";
+                            echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['email']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['course']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['time_in']) . "</td>";
                             echo "</tr>";
                             $count++;
                         }
@@ -187,5 +114,19 @@ $qr_code_image = "attendanceqr.png";
             </table>
         </div>
     </div>
+    
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h2>Logout Confirmation</h2>
+            <p>Are you sure you want to log out?</p>
+            <div class="logout-actions">
+                <a href="logout.php?confirm=yes" class="btn btn-yes">Yes, Log out</a>
+                <a href="#" class="btn btn-no">No, Stay logged in</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/logout.js"></script>
 </body>
 </html>

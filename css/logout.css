@@ -1,0 +1,62 @@
+/* Logout Confirmation Styles */
+
+.logout-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: rgba(177, 52, 52, 0.9);
+}
+
+.logout-box {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+}
+
+.logout-box h2 {
+    color: #b13434;
+    margin-bottom: 20px;
+}
+
+.logout-box p {
+    color: #333;
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.logout-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn {
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-yes {
+    background-color: #b13434;
+    color: white;
+}
+
+.btn-yes:hover {
+    background-color: #8e2828;
+}
+
+.btn-no {
+    background-color: #333;
+    color: white;
+}
+
+.btn-no:hover {
+    background-color: #222;
+}

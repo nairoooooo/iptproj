@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         // Check if email already exists in respective table
         $table = ($role == 'teacher') ? 'teachers' : 'students';
         $sql = "SELECT * FROM $table WHERE email = '$email'";
-        $result = mysqli_query($conn, query: $sql);
+        $result = mysqli_query($conn, $sql);
         
         if (mysqli_num_rows($result) > 0) {
             $error = "Email already exists";
@@ -128,117 +128,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/login.css">
     <title>Login - Student Attendance System</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #a73535;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: white;
-        }
-        .container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-        }
-        .form-container {
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-        }
-        .tab.active {
-            border-bottom: 2px solid white;
-            font-weight: bold;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .role-toggle {
-            display: flex;
-            margin-bottom: 20px;
-        }
-        .role-option {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-        }
-        .role-option.active {
-            background-color: white;
-            color: #a73535;
-            font-weight: bold;
-        }
-        .role-option:first-child {
-            border-radius: 4px 0 0 4px;
-        }
-        .role-option:last-child {
-            border-radius: 0 4px 4px 0;
-        }
-        .btn {
-            background-color: white;
-            color: #a73535;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            text-transform: uppercase;
-        }
-        .error-message {
-            background-color: rgba(255, 0, 0, 0.2);
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 28px;
-            text-transform: uppercase;
-        }
-        .student-fields {
-            display: none;
-        }
-    </style>
+ 
 </head>
 <body>
     <div class="container">
@@ -257,8 +149,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             <div id="login" class="tab-content active">
                 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                     <div class="role-toggle">
-                        <div class="role-option active" onclick="selectRole('login-teacher', this)">Teacher</div>
-                        <div class="role-option" onclick="selectRole('login-student', this)">Student</div>
+                        <div class="role-option active" onclick="selectRole('teacher', this)">Teacher</div>
+                        <div class="role-option" onclick="selectRole('student', this)">Student</div>
                         <input type="hidden" id="role" name="role" value="teacher">
                     </div>
                     
@@ -341,7 +233,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         
         function selectRole(role, element) {
             // Update hidden input
-            document.getElementById('role').value = role === 'login-teacher' ? 'teacher' : 'student';
+            document.getElementById('role').value = role;
             
             // Update UI
             var options = document.querySelectorAll('#login .role-option');

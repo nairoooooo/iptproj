@@ -39,13 +39,14 @@ if (mysqli_query($conn, $sql)) {
     echo "Error creating attendance table: " . mysqli_error($conn) . "<br>";
 }
 
-// Create Teachers Table
+// Create Teachers Table with profile_image field
 $sql = "CREATE TABLE IF NOT EXISTS teachers (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     phone VARCHAR(20) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    profile_image VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )";
 
@@ -53,6 +54,17 @@ if (mysqli_query($conn, $sql)) {
     echo "Teachers table created successfully or already exists<br>";
 } else {
     echo "Error creating teachers table: " . mysqli_error($conn) . "<br>";
+}
+
+// Add profile_image column if it doesn't exist
+$result = mysqli_query($conn, "SHOW COLUMNS FROM teachers LIKE 'profile_image'");
+if (mysqli_num_rows($result) == 0) {
+    $sql = "ALTER TABLE teachers ADD COLUMN profile_image VARCHAR(255) DEFAULT NULL";
+    if (mysqli_query($conn, $sql)) {
+        echo "Profile image column added to teachers table<br>";
+    } else {
+        echo "Error adding profile image column: " . mysqli_error($conn) . "<br>";
+    }
 }
 
 // Create Students Table
@@ -114,6 +126,15 @@ if ($row['student_count'] == 0) {
         echo "Default student account created: student@example.com / password123<br>";
     } else {
         echo "Error creating default student account: " . mysqli_error($conn) . "<br>";
+    }
+}
+
+// Create uploads directory if it doesn't exist
+if (!file_exists('uploads')) {
+    if (mkdir('uploads', 0777, true)) {
+        echo "Uploads directory created successfully<br>";
+    } else {
+        echo "Error creating uploads directory<br>";
     }
 }
 
